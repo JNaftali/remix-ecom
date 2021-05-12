@@ -31,7 +31,7 @@ function MiniCart() {
                         <li key={line.sku}>
                            {line.variant.product.name} ({line.variant.name}):{" "}
                            {line.quantity}{" "}
-                           <Form method="post" action="/cart/remove">
+                           <Form replace method="post" action="/cart/remove">
                               <input
                                  type="hidden"
                                  name="sku"
