@@ -11,11 +11,12 @@ export async function loader({ request }: LoaderFunctionArg) {
             // We verify that a variant exists before adding it to the cart
             variant: getVariantBySku(line.sku)!,
          })),
+         count: cart.lines.reduce((total, line) => total + line.quantity, 0),
       };
    });
 }
 
-type AppData = InferLoaderBody<typeof loader>;
+export type AppData = InferLoaderBody<typeof loader>;
 
 export default function CartPage() {
    const { lines } = useRouteData<AppData>();

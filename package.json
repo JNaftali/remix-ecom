@@ -9,6 +9,7 @@
     "start": "remix-serve build"
   },
   "dependencies": {
+    "@reach/dialog": "^0.15.0",
     "@remix-run/node": "0.17.0",
     "@remix-run/react": "0.17.0",
     "@remix-run/serve": "0.17.0",

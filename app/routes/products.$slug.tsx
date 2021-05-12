@@ -1,4 +1,4 @@
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import { Form, LoaderFunction, redirect, useRouteData } from "remix";
 import { getProductBySlug } from "../db/products";
 import { ClientOnly } from "../utils";
@@ -15,9 +15,8 @@ export function loader({ params }: Parameters<LoaderFunction>[0]) {
 }
 
 export default function ProductDetailPage() {
-   const { product } = useRouteData<
-      Exclude<ReturnType<typeof loader>, Response>
-   >();
+   const { product } =
+      useRouteData<Exclude<ReturnType<typeof loader>, Response>>();
    const location = useLocation();
 
    return (
