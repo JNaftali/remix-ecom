@@ -3,11 +3,17 @@ import { Link, useLocation } from "react-router-dom";
 import { useIsClient } from "../utils";
 import type { AppData as CartData } from "../routes/cart";
 import Dialog from "@reach/dialog";
-import { Form, LinksFunction } from "remix";
+import { Form, LinksFunction, usePendingFormSubmit } from "remix";
 
 function MiniCart() {
    const cart = useCartData();
-   const [isModalOpen, setModalOpen] = useState(false);
+   const [cartIsOpen, setCartIsOpen] = useState(false);
+   const toggleMiniCart: ToggleCartFunction = (isOpen) => {
+      if (typeof isOpen === "boolean") setCartIsOpen(isOpen);
+      else setCartIsOpen((x) => !x);
+   };
+
+   useOpenMiniCartWhenAddingToCart(toggleMiniCart);
    const location = useLocation();
 
    if (!useIsClient() || !cart) {
@@ -16,8 +22,8 @@ function MiniCart() {
 
    return (
       <>
-         <button onClick={() => setModalOpen(true)}>Cart ({cart.count})</button>
-         {isModalOpen && (
+         <button onClick={() => toggleMiniCart()}>Cart ({cart.count})</button>
+         {cartIsOpen && (
             <Dialog aria-label="Mini cart">
                {cart.lines.length ? (
                   <ul>
@@ -44,7 +50,7 @@ function MiniCart() {
                ) : (
                   <span>Cart is empty :(</span>
                )}
-               <button onClick={() => setModalOpen(false)}>close</button>
+               <button onClick={() => toggleMiniCart(false)}>close</button>
             </Dialog>
          )}
       </>
@@ -76,3 +82,16 @@ function useCartData() {
 }
 
 export default MiniCart;
+
+interface ToggleCartFunction {
+   (isOpen?: boolean): void;
+}
+
+function useOpenMiniCartWhenAddingToCart(toggleMiniCart: ToggleCartFunction) {
+   const pendingForm = usePendingFormSubmit();
+   useEffect(() => {
+      if (pendingForm && pendingForm.action.endsWith("/cart/add")) {
+         toggleMiniCart(true);
+      }
+   }, [pendingForm]);
+}
